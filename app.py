@@ -51,5 +51,5 @@ def process():
 
 if __name__ == '__main__':
     # Récupérer le port depuis la variable d'environnement PORT
-    port = int(os.environ.get("PORT", 5000))  # Si la variable PORT n'est pas définie, utiliser le port 5000 par défaut
+    port = int(os.environ.get("PORT", 10000))  # Si la variable PORT n'est pas définie, utiliser le port 5000 par défaut
     app.run(host="0.0.0.0", port=port)
