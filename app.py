@@ -24,14 +24,25 @@ def process():
     img_file = request.files['image']
     img = Image.open(img_file).convert("RGBA")
 
-    buffered = io.BytesIO()
-    img.save(buffered, format="PNG")
-    img_bytes = remove(buffered.getvalue())
+    # Redimensionner l'image à une taille maximale de 1024x1024 pour économiser de la mémoire
+    img.thumbnail((1024, 1024))
 
+    # Sauvegarder l'image redimensionnée en mémoire avec une compression PNG
+    buffered = io.BytesIO()
+    img.save(buffered, format="PNG", optimize=True)
+    img_bytes = buffered.getvalue()
+
+    # Utiliser rembg pour retirer le fond de l'image
+    img_bytes = remove(img_bytes)
+
+    # Recharger l'image traitée
     img_rgba = Image.open(io.BytesIO(img_bytes)).convert("RGBA")
+    
+    # Créer un fond blanc et y insérer l'image sans fond
     background = Image.new("RGB", img_rgba.size, (255, 255, 255))
     background.paste(img_rgba, mask=img_rgba.split()[3])
 
+    # Sauvegarder l'image sans fond en JPEG avec une compression de qualité 80
     out_buffer = io.BytesIO()
     background.save(out_buffer, format="JPEG", quality=80)
     out_buffer.seek(0)
