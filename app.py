@@ -2,6 +2,7 @@ from flask import Flask, request, send_file
 import io
 from PIL import Image
 from rembg import remove
+import os  # Import pour gérer les variables d'environnement
 
 app = Flask(__name__)
 
@@ -36,3 +37,8 @@ def process():
     out_buffer.seek(0)
 
     return send_file(out_buffer, mimetype='image/jpeg', download_name='image_sans_fond.jpg')
+
+if __name__ == '__main__':
+    # Récupérer le port depuis la variable d'environnement PORT
+    port = int(os.environ.get("PORT", 5000))  # Si la variable PORT n'est pas définie, utiliser le port 5000 par défaut
+    app.run(host="0.0.0.0", port=port)
